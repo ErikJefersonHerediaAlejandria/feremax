@@ -1,0 +1,15 @@
+node_modules/
+.next/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+__pycache__/
+.venv/
+*.pyc
+.pytest_cache/
+recommender/artefactos/
+playwright-report/
+test-results/
+.DS_Store
