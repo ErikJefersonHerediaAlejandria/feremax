@@ -61,3 +61,10 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
   API de Supabase (clave `anon`) no exponga datos. Agrega también `CHECK (id = 1)` en `configuracion`.
 - **D-23 · Respaldo SQL.** `db/ferremax_v2.sql` (INSERTs y una sola transacción) sirve para el SQL Editor o psql. No
   incluye administradores.
+- **D-24 · Reconstrucción en Supabase (2026-10-26, con aprobación del usuario).** El *Table Editor* había creado 4
+  tablas a partir de los CSV, con tipos inferidos (sin PK/FK, `double precision` en precios, `bigint` en
+  `peso_contenido`). Se borraron, se ejecutó `prisma migrate deploy` (13 tablas) y el seed. Antes y después:
+  52 productos, 5.000 boletas, 13.556 ítems, venta S/ 1.046.271,80 y stock 981.
+- **D-25 · Credenciales de Supabase** en `backend/.env.supabase` (ignorado por git), con plantilla en
+  `.env.supabase.example`. Los scripts `db:*:supabase` las cargan con `node --env-file`. El `.env` por defecto sigue
+  apuntando a la base local, para no tocar Supabase por accidente.

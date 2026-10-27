@@ -26,7 +26,11 @@
     "db:seed": "prisma db seed",
     "db:importar-v1": "tsx prisma/scripts/importar-v1.ts",
     "db:importar-boletas": "tsx prisma/scripts/importar-boletas.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:studio:supabase": "node --env-file=.env.supabase node_modules/prisma/build/index.js studio",
+    "db:deploy:supabase": "node --env-file=.env.supabase node_modules/prisma/build/index.js migrate deploy",
+    "db:seed:supabase": "node --env-file=.env.supabase node_modules/prisma/build/index.js db seed"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
