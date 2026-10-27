@@ -171,3 +171,13 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
   `recommender` (ruff y pytest), `frontend` (lint y tipos) y `e2e` (pila completa, entrenamiento, build, Playwright;
   paridad y Lighthouse como informativos, con artefactos).
 - **D-60 · `prisma.config.ts`** tolera la falta de `DIRECT_URL` (`prisma generate` en `npm ci` no necesita conexión).
+- **D-61 · Despliegue gratuito (Render free en lugar de Starter).** A pedido del autor, el API y el recommender usan el
+  plan gratuito de Render (`render.yaml`, Blueprint), Vercel Hobby y Supabase Free. Consecuencias:
+  - Los servicios se suspenden tras 15 min sin tráfico y tardan ~50 s en despertar. Antes de cada sesión de evaluación
+    se abre la tienda o el panel uno o dos minutos antes. Al arrancar, el API despierta al recommender (`main.ts`).
+  - El plan gratuito no tiene red privada: el recommender es un servicio web público, protegido por `X-Internal-Key`
+    (solo `/health` es abierto).
+  - Memoria de 512 MB: medido en local, el recommender usa 182 MB en reposo y 320 MB de pico al reentrenar o evaluar.
+  - Sin disco persistente: el modelo se guarda en el bucket privado `modelos` de Supabase y se carga al arrancar.
+  - Sin comando pre-deploy: las migraciones de producción se aplican a mano desde el equipo
+    (`npm run db:deploy:supabase`), previa confirmación.

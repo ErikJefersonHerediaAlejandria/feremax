@@ -39,7 +39,7 @@ export abstract class Recommender {
   abstract reentrenar(): Promise<Record<string, unknown>>;
   abstract evaluacionOffline(): Promise<Record<string, unknown>>;
   abstract recargar(): Promise<void>;
-  abstract salud(): Promise<boolean>;
+  abstract salud(timeoutMs?: number): Promise<boolean>;
 }
 
 @Injectable()
@@ -109,9 +109,9 @@ export class RecommenderHttp extends Recommender {
     await this.llamar('/recargar', {});
   }
 
-  async salud() {
+  async salud(timeoutMs = 3_000) {
     try {
-      await this.llamar('/health', undefined, 3_000);
+      await this.llamar('/health', undefined, timeoutMs);
       return true;
     } catch {
       return false;

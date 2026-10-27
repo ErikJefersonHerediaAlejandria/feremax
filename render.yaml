@@ -1,0 +1,59 @@
+# Blueprint de Render (plan gratuito). En Render: New → Blueprint → este repositorio.
+# Las variables con `sync: false` las pide Render al crear los servicios; nunca van en el repositorio.
+services:
+  - type: web
+    name: ferremax-recommender
+    runtime: python
+    plan: free
+    region: virginia
+    rootDir: recommender
+    buildCommand: pip install uv && uv sync --frozen --no-dev
+    startCommand: .venv/bin/uvicorn ferremax_recommender.api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL # Supabase: Session pooler (puerto 5432)
+        sync: false
+      - key: RECOMMENDER_KEY
+        generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: BUCKET_MODELOS
+        value: modelos
+      - key: SEMILLA
+        value: "42"
+
+  - type: web
+    name: ferremax-api
+    runtime: node
+    plan: free
+    region: virginia
+    rootDir: backend
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL # Supabase: Transaction pooler (puerto 6543) con ?pgbouncer=true
+        sync: false
+      - key: DIRECT_URL # Supabase: Session pooler (puerto 5432)
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: RECOMMENDER_URL # URL pública del recommender, p. ej. https://ferremax-recommender.onrender.com
+        sync: false
+      - key: RECOMMENDER_KEY
+        fromService:
+          type: web
+          name: ferremax-recommender
+          envVarKey: RECOMMENDER_KEY
+      - key: FRONTEND_ORIGIN # URL de Vercel (y luego https://sosdigital.lat,https://www.sosdigital.lat)
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"

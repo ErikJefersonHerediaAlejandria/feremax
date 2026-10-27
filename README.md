@@ -111,4 +111,15 @@ Cada app tiene su `.env.example`:
 
 Las credenciales de Supabase van en `backend/.env.supabase`, que está ignorado por git.
 
+## Despliegue (planes gratuitos)
+
+| Servicio | Dónde | Cómo |
+|---|---|---|
+| Base de datos | Supabase | Ya creada; migraciones con `npm run db:deploy:supabase` desde `backend/` |
+| recommender y API | Render | **New → Blueprint** con este repositorio (lee `render.yaml`) |
+| Tienda | Vercel | Importar el repositorio con *Root Directory* `frontend` |
+
+En el plan gratuito de Render los servicios duermen tras 15 min sin uso: abre la tienda un par de minutos antes de
+cada sesión de evaluación. Detalles en `DECISIONES.md` (D-61).
+
 Las decisiones de diseño tomadas durante el desarrollo están en [`DECISIONES.md`](DECISIONES.md).
