@@ -26,7 +26,7 @@ Navegador ─► frontend/     Next.js 16 (App Router, Tailwind 4)      sosdigit
 | `recommender/` | Minería de reglas (FP-Growth), CF ítem-ítem, reordenador LightGBM, búsqueda TF-IDF y evaluación offline. |
 | `data/` | `seed/` (catálogo de v1), `sintetico/` (5.000 boletas generadas) y `scripts/`. |
 | `db/` | Respaldo SQL y CSV para Supabase, con la guía en `db/LEEME.md`. |
-| `docs/` | `api.md` (contrato), `recomendador.md` (metodología), `inventario-ui.md` (pantallas de v1). |
+| `docs/` | `api.md` (contrato), `recomendador.md` (metodología) y `openapi-v1.json` (contrato de v1). |
 
 ## Cómo verlo funcionar en tu PC
 

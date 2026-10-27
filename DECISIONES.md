@@ -14,8 +14,8 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
 - **D-04 · Imágenes.** Se copian las de v1 (`/img/productos/{sku}.webp`, `/img/categorias/*.webp`) a `data/seed/img/`;
   el frontend v2 las servirá como estáticos. `imagen_url` se llena con esa ruta.
 - **D-05 · `/api/health`** no existe en v1 (404); se agrega en v2 como ruta nueva, sin romper el contrato.
-- **D-06 · Respuestas de referencia.** Las respuestas GET reales de v1 se guardan en `docs/v1-respuestas/` para la
-  prueba de paridad de la Fase 5.
+- **D-06 · Respuestas de referencia.** La prueba de paridad de la Fase 5 compara en vivo las
+  respuestas GET de v1 con las de v2 (solo GET, sin guardar copias).
 - **D-07 · Tipos de evento.** v1 usa `INICIO_BUSQUEDA`, `CONSULTA`, `RECOM_MOSTRADA`, `PRODUCTO_AGREGADO`,
   `PRODUCTO_RETIRADO` y `CONFIRMACION_CARRITO` (este último lo registra el servidor). El prompt los nombra
   `busqueda, ver_detalle, agregar_carrito, click_recomendacion, quitar, confirmar`. Los indicadores de v1 dependen de
