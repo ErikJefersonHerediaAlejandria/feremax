@@ -35,3 +35,25 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
 - **D-13 · `GET /api/admin/config` público.** v1 lo expone sin token (la tienda lo consulta cada 5 s). En v2 la misma ruta
   devuelve solo `{modo_activo, k, variante_ml, fuente_datos}` sin autenticación, y la configuración completa
   (umbrales y `reordenador`) cuando llega con la cookie o el token de administrador.
+
+## Fase 1
+- **D-14 · Versiones.** Prisma **7.10.1** para `prisma`, `@prisma/client` y `@prisma/adapter-pg`. La etiqueta `latest`
+  de `prisma` apunta a `8.0.0-rc.27`, que no es estable. NestJS 12 (ESM, Vitest, oxlint) y TypeScript 6.0.3, la
+  versión que soporta `@nestjs/cli`.
+- **D-15 · Zona horaria UTC forzada.** `@prisma/adapter-pg` envía los timestamps sin zona, y Postgres los interpretaba
+  en la zona de la sesión (America/Bogota en este equipo), corriéndolos 5 h en la base. Toda conexión fija
+  `-c timezone=UTC` (`opcionesPg()` en `prisma/scripts/lib.ts`). Un test de integración lo vigila.
+- **D-16 · PostgreSQL local de desarrollo.** Clúster propio del proyecto en `.pgdata/` (puerto 5433, usuario `ferremax`,
+  autenticación trust solo en localhost), con las bases `ferremax_dev` y `ferremax_test`. No toca el Postgres del
+  sistema (5432). Supabase se usará en la Fase 6.
+- **D-17 · `DIRECT_URL` para el CLI y `DATABASE_URL` para la app**, como recomienda Supabase (pooler 6543 / directo 5432).
+- **D-18 · Tablas adicionales:** `evaluaciones_offline` (guarda cada corrida, como pide la Fase 2) y
+  `sesiones_evaluacion.token_dispositivo`, porque v1 vincula el navegador del participante con ese token
+  (cabecera `x-sesion-evaluacion`).
+- **D-19 · Clientes.** No hay tabla `clientes`: el panel los deriva de boletas, pedidos y sesiones, como hace v1 en
+  `/admin/dashboard`.
+- **D-20 · Seed.** Es idempotente y no pisa el `stock` de productos existentes, para no deshacer las ventas. Las boletas
+  sintéticas se cargan solo si la tabla está vacía.
+- **D-21 · Formato del respaldo v1** (desconocido): una carpeta con `productos|boletas|boleta_items|reglas|sesiones|
+  eventos|pedidos|pedido_items|configuracion` en `.json` o `.csv`, con los nombres de campo de v1. Las fechas sin zona
+  se toman como UTC. Hay un ejemplo en `backend/test/fixtures/respaldo-v1/`.

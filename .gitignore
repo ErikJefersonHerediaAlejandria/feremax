@@ -13,3 +13,5 @@ recommender/artefactos/
 playwright-report/
 test-results/
 .DS_Store
+.pgdata/
+*.tsbuildinfo

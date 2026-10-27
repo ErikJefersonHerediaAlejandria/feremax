@@ -1,0 +1,207 @@
+// FerreMax v2 — esquema de base de datos (PostgreSQL / Supabase).
+// Tablas y columnas en snake_case, igual que el dominio del API v1.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Modo {
+  CONV
+  ML
+}
+
+model Producto {
+  sku          String  @id
+  nombre       String
+  marca        String?
+  categoria    String?
+  subcategoria String?
+  unidad       String?
+  uso          String?
+  precio       Decimal @db.Decimal(10, 2)
+  stock        Int     @default(0)
+  activo       Boolean @default(true)
+  imagen_url   String?
+
+  boleta_items BoletaItem[]
+  pedido_items PedidoItem[]
+
+  @@index([categoria])
+  @@map("productos")
+}
+
+/// Historial de ventas usado para entrenar el recomendador.
+model Boleta {
+  id_boleta      String   @id
+  fecha          DateTime @db.Timestamptz(3)
+  cliente_codigo String
+
+  items BoletaItem[]
+
+  @@index([fecha])
+  @@index([cliente_codigo])
+  @@map("boletas")
+}
+
+model BoletaItem {
+  id        Int     @id @default(autoincrement())
+  id_boleta String
+  sku       String
+  cantidad  Int
+  precio    Decimal @db.Decimal(10, 2)
+
+  boleta   Boleta   @relation(fields: [id_boleta], references: [id_boleta], onDelete: Cascade)
+  producto Producto @relation(fields: [sku], references: [sku])
+
+  @@index([id_boleta])
+  @@index([sku])
+  @@map("boleta_items")
+}
+
+/// Fila única (id = 1) con la configuración del recomendador.
+model Configuracion {
+  id             Int      @id @default(1)
+  modo_activo    Modo     @default(ML)
+  k              Int      @default(5)
+  soporte_min    Float    @default(0.01)
+  confianza_min  Float    @default(0.15)
+  lift_min       Float    @default(1.2)
+  peso_contenido Float    @default(1.0)
+  /// REGLAS | COMPLETO
+  variante_ml    String   @default("COMPLETO")
+  /// empresa | sintetico
+  fuente_datos   String   @default("sintetico")
+  /// Metadatos del reordenador entrenado (tipo, versión, AP de validación, variables…)
+  reordenador    Json?
+  actualizada_en DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@map("configuracion")
+}
+
+model ReglaAsociacion {
+  id             Int      @id @default(autoincrement())
+  antecedente    String[]
+  consecuente    String[]
+  soporte        Float
+  confianza      Float
+  lift           Float
+  vigente        Boolean  @default(true)
+  version_modelo String?
+  creada_en      DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([vigente])
+  @@map("reglas_asociacion")
+}
+
+model Modelo {
+  id        Int      @id @default(autoincrement())
+  version   String   @unique
+  /// lightgbm | regresion_logistica
+  tipo      String
+  fecha     DateTime @default(now()) @db.Timestamptz(3)
+  metricas  Json
+  /// Ruta del artefacto en Supabase Storage (bucket "modelos")
+  artefacto String?
+  vigente   Boolean  @default(false)
+
+  @@map("modelos")
+}
+
+/// Resultado de cada corrida de evaluación offline (Precision@5 / Recall@5 por modo).
+model EvaluacionOffline {
+  id        Int      @id @default(autoincrement())
+  fecha     DateTime @default(now()) @db.Timestamptz(3)
+  resultado Json
+
+  @@index([fecha])
+  @@map("evaluaciones_offline")
+}
+
+model SesionEvaluacion {
+  id_sesion         String    @id
+  codigo_cliente    String
+  escenario         String
+  condicion         Modo
+  /// Orden de contrabalanceo (A | B, o número)
+  orden             String
+  /// Token que vincula el navegador del participante (cabecera x-sesion-evaluacion)
+  token_dispositivo String    @unique
+  inicio            DateTime  @default(now()) @db.Timestamptz(3)
+  fin               DateTime? @db.Timestamptz(3)
+  valida            Boolean   @default(true)
+  completa          Boolean   @default(false)
+
+  @@index([codigo_cliente])
+  @@index([fin])
+  @@map("sesiones_evaluacion")
+}
+
+model Evento {
+  id             BigInt   @id @default(autoincrement())
+  id_sesion      String
+  codigo_cliente String
+  escenario      String?
+  condicion      Modo
+  tipo_evento    String
+  texto_consulta String?
+  sku            String?
+  posicion_recom Int?
+  origen         String?
+  /// Marca de tiempo del cliente, en milisegundos desde epoch
+  timestamp      BigInt
+  recibido_en    DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([id_sesion])
+  @@index([codigo_cliente])
+  @@index([tipo_evento])
+  @@map("eventos")
+}
+
+model Pedido {
+  id             Int      @id @default(autoincrement())
+  fecha          DateTime @default(now()) @db.Timestamptz(3)
+  id_sesion      String
+  codigo_cliente String
+  escenario      String?
+  condicion      Modo
+  entrega        String?
+  pago           String?
+  total          Decimal  @db.Decimal(10, 2)
+  estado         String   @default("Registrado")
+
+  items PedidoItem[]
+
+  @@index([id_sesion])
+  @@index([codigo_cliente])
+  @@map("pedidos")
+}
+
+model PedidoItem {
+  id        Int     @id @default(autoincrement())
+  pedido_id Int
+  sku       String
+  cantidad  Int
+  precio    Decimal @db.Decimal(10, 2)
+  origen    String
+
+  pedido   Pedido   @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  producto Producto @relation(fields: [sku], references: [sku])
+
+  @@index([pedido_id])
+  @@map("pedido_items")
+}
+
+model Admin {
+  id            Int      @id @default(autoincrement())
+  username      String   @unique
+  /// argon2id
+  password_hash String
+  creado_en     DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("admins")
+}

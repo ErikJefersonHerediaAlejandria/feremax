@@ -1,0 +1,2 @@
+[{"id_sesion":"SES-0001","codigo_cliente":"CLI-0007","escenario":"Pintar una habitación","condicion":"CONV","tipo_evento":"CONSULTA","texto_consulta":"pintar pared","timestamp":1759330800000},
+ {"id_sesion":"SES-0001","codigo_cliente":"CLI-0007","escenario":"Pintar una habitación","condicion":"CONV","tipo_evento":"PRODUCTO_AGREGADO","sku":"PIN-007","posicion_recom":1,"origen":"RECOMENDACION","timestamp":1759330860000}]

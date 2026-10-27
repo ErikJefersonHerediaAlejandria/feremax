@@ -1,0 +1,2 @@
+[{"id":1,"antecedentes":"[\"TUB-001\"]","consecuentes":"[\"ACC-001\"]","soporte":0.024,"confianza":0.63,"lift":8.9,"version_modelo":"3.0"},
+ {"id":2,"antecedentes":"[\"PIN-001\", \"FER-003\"]","consecuentes":"[\"PIN-007\"]","soporte":0.012,"confianza":0.58,"lift":9.1,"version_modelo":"3.0"}]

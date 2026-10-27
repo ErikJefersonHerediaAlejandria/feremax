@@ -1,0 +1,3 @@
+id_pedido,sku,cantidad,precio,origen
+17,PIN-001,1,48.00,BUSQUEDA
+17,PIN-007,1,34.00,RECOMENDACION

@@ -1,0 +1,3 @@
+id_sesion,codigo_cliente,escenario,condicion,orden,inicio,fin,valida
+SES-0001,CLI-0007,"Pintar una habitación",CONV,A,2026-10-01 10:00:00,2026-10-01 10:12:30,true
+SES-0002,CLI-0007,"Arreglar una fuga, urgente",ML,A,2026-10-01 10:15:00,,true
