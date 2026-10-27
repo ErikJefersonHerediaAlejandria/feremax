@@ -57,3 +57,7 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
 - **D-21 · Formato del respaldo v1** (desconocido): una carpeta con `productos|boletas|boleta_items|reglas|sesiones|
   eventos|pedidos|pedido_items|configuracion` en `.json` o `.csv`, con los nombres de campo de v1. Las fechas sin zona
   se toman como UTC. Hay un ejemplo en `backend/test/fixtures/respaldo-v1/`.
+- **D-22 · RLS en Supabase.** La migración `rls_supabase` activa RLS sin políticas en todas las tablas, para que la Data
+  API de Supabase (clave `anon`) no exponga datos. Agrega también `CHECK (id = 1)` en `configuracion`.
+- **D-23 · Respaldo SQL.** `db/ferremax_v2.sql` (INSERTs y una sola transacción) sirve para el SQL Editor o psql. No
+  incluye administradores.
