@@ -68,3 +68,25 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
 - **D-25 · Credenciales de Supabase** en `backend/.env.supabase` (ignorado por git), con plantilla en
   `.env.supabase.example`. Los scripts `db:*:supabase` las cargan con `node --env-file`. El `.env` por defecto sigue
   apuntando a la base local, para no tocar Supabase por accidente.
+
+## Fase 2
+- **D-26 · Respuesta de `/recomendar`.** Devuelve `ProductoPuntuado[]` completo. El catálogo (precio, stock, activo)
+  se lee de la base con una caché de 30 s, y `POST /recargar` la invalida.
+- **D-27 · Puntajes.** En CONV, `puntaje` = confianza × lift de la mejor regla activa, para que sea coherente con el
+  orden. En ML, es la probabilidad del reordenador. En popularidad es `null`, como en v1.
+- **D-28 · `peso_contenido`** multiplica las 3 variables de contenido antes de puntuar (1 = neutro, valor usado al
+  entrenar). **`variante_ml`:** `COMPLETO` (16 variables) o `REGLAS` (8 variables, candidatos de reglas y
+  popularidad). Cada reentrenamiento entrena las dos variantes.
+- **D-29 · Validación del reordenador.** Reglas, CF y popularidad del 90 % más antiguo, AP sobre el 10 % final.
+  Luego se reaprenden reglas, CF y popularidad con el 100 % para servir, y se conserva el reordenador validado.
+- **D-30 · Protocolo offline "dado uno"** (contexto = 1 producto, relevantes = el resto de la boleta) sobre el 10 %
+  final. Se incluye `POPULARIDAD` como referencia y McNemar exacto entre cada par de modos.
+- **D-31 · Historial del cliente.** El recommender lo usa (B = historial ∪ carrito) solo cuando el backend le pasa
+  `codigo_cliente`. El backend decide si puede pasarlo, igual que en v1: solo con el token de la sesión activa de ese
+  cliente.
+- **D-32 · Sin reglas o sin modelo** (base recién creada), el modo ML se comporta como CONV, y si tampoco hay reglas,
+  como popularidad. `/health` informa la versión del modelo.
+- **D-33 · Artefactos.** `joblib` en `recommender/artefactos/` y, si hay `SUPABASE_URL` y `SUPABASE_SECRET_KEY`, en el
+  bucket privado `modelos`. `modelos.artefacto` guarda `local://…` o `storage://modelos/…`.
+- **D-34 · Sinónimos.** "pared" solo se expande a "tarugo": expandirla a pinturas desviaba búsquedas como "colgar un
+  cuadro en la pared".
