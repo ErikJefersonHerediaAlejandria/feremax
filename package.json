@@ -1,0 +1,12 @@
+{
+  "name": "ferremax-v2",
+  "private": true,
+  "description": "FerreMax v2 · monorepo (frontend Next.js, backend NestJS, recommender FastAPI)",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "capturas": "node scripts/capturas.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

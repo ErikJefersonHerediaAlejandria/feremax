@@ -109,3 +109,34 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
 - **D-42 · Pedido:** se fusionan las líneas repetidas del mismo SKU. Se usa un descuento condicional
   (`stock >= cantidad`) dentro de la transacción, así que nunca queda stock negativo.
 - **D-43 · Cliente Prisma generado en `src/generated/prisma`**, para que `nest build` lo compile.
+
+## Fase 4
+- **D-44 · Next.js 16.4** con `cacheComponents` y `partialPrefetching` (los valores por defecto de create-next-app).
+  El catálogo, las categorías y el detalle se leen en Server Components con `'use cache'` y el perfil
+  `cacheLife("catalogo")`: `stale` de 5 min (el mínimo para entrar en el App Shell), revalidación cada 1 min y
+  expiración a la hora. Las 52 fichas se prerenderizan con `generateStaticParams`. El build necesita el API accesible.
+- **D-45 · Lo dependiente del navegador es Client Component:** carrito, sesión experimental, recomendaciones y eventos.
+  El carrito y el último pedido usan `useSyncExternalStore` sobre localStorage/sessionStorage (claves de v1:
+  `ferremax_carrito`, `ferremax_ultimo_pedido`, `ferremax_sesion_eval`).
+- **D-46 · Condición oculta al participante.** v1 mostraba chips "Modo: Machine Learning/Convencional" en la tienda.
+  En v2 se quitaron: la condición solo aparece en la franja "Sesión de evaluación" cuando el navegador tiene sesión
+  de admin. El texto de "Cómo se ordenaron estos resultados" no depende de la condición (la búsqueda por necesidad es
+  igual en CONV y ML).
+- **D-47 · Eventos.** `INICIO_BUSQUEDA` (primera interacción, una vez por sesión y pestaña), `CONSULTA`,
+  `RECOM_MOSTRADA` (un evento por producto con el mismo timestamp por lista), `VER_DETALLE`, `CLIC_RECOMENDACION`,
+  `PRODUCTO_AGREGADO` y `PRODUCTO_RETIRADO`, con `origen` y `posicion_recom`. `CONFIRMACION_CARRITO` lo registra el
+  backend.
+- **D-48 · Layout único** de tienda (D-08) y páginas informativas en `/ayuda/{faq,envios,privacidad,terminos}` y
+  `/libro-reclamaciones` (formulario de demostración que no envía datos) (D-09).
+- **D-49 · Identidad visual.** Inter (`next/font`), Material Symbols servido como subconjunto (`icon_names`, unos
+  100 íconos regenerados con `npm run iconos`). Azul marca `#0f2a4a`. El naranja `#F26B1D` se reserva para acentos no
+  textuales; los botones usan `#C2410C` para cumplir el contraste AA con texto blanco.
+- **D-50 · Medios de pago** (simulados): Yape, Plin, Visa, Mastercard, PagoEfectivo y efectivo. Entrega: recojo en
+  tienda (sin costo) o delivery en Lima (costo por coordinar; no se suma al total, como en v1).
+- **D-51 · Panel admin en el cliente.** Lo protege `GET /api/admin/verificar`, y un 401 lleva a
+  `/admin/login?siguiente=`. Sus páginas exportan `instant = false` porque no tienen App Shell que validar. Escenarios
+  `ESC-01…ESC-08` y códigos `CLI-0000`.
+- **D-52 · Proxy opcional** `API_PROXY_URL`: reescribe `/api/*` hacia el backend, para que la cookie del admin sea
+  same-site cuando frontend y API están en dominios distintos (URLs provisionales `*.vercel.app` / `*.onrender.com`).
+- **D-53 · `npm run dev`** en la raíz levanta PostgreSQL (5433), recommender (8001), API (4000) y web (3000).
+  `npm run capturas` toma capturas con Playwright.
