@@ -1,5 +1,5 @@
-// Subconjunto de Material Symbols que usa la app: Google Fonts sirve solo estos glifos (unos KB en vez de MB).
-// Mantener la lista ordenada alfabéticamente (requisito de `icon_names`). `npm run iconos` la verifica.
+// Íconos de Material Symbols que usa la app. `npm run iconos` regenera esta lista desde el código y descarga el
+// subconjunto de la fuente (solo estos glifos) a public/fonts/material-symbols.woff2, que se sirve desde el sitio.
 export const ICONOS = [
   "account_balance",
   "add",
@@ -103,4 +103,3 @@ export const ICONOS = [
   "water_drop",
 ];
 
-export const URL_ICONOS = `https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&icon_names=${ICONOS.join(",")}&display=block`;

@@ -140,3 +140,34 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
   same-site cuando frontend y API están en dominios distintos (URLs provisionales `*.vercel.app` / `*.onrender.com`).
 - **D-53 · `npm run dev`** en la raíz levanta PostgreSQL (5433), recommender (8001), API (4000) y web (3000).
   `npm run capturas` toma capturas con Playwright.
+
+## Fase 5
+- **D-54 · Pruebas de punta a punta (Playwright, `e2e/`)** contra la pila en modo producción. La compra completa se
+  prueba en cada condición (CONV y ML) y verifica: el motor que respondió (`fuente`), los eventos de la sesión (todos
+  con su condición), que el pedido trae un ítem de origen `RECOMENDACION` y la fila de indicadores. Las sesiones de
+  prueba quedan inválidas (escenario `E2E · …`). Además se prueba que el participante no ve la condición y que 11
+  páginas no tienen desborde a 360 px.
+- **D-55 · Paridad v1 ↔ v2** (`npm run paridad`): solo GET a v1. Compara estado HTTP y forma recursiva. Resultado:
+  15 de 16 rutas idénticas; `/api/admin/config` difiere a propósito (D-38).
+- **D-56 · Lighthouse** (`npm run lighthouse`, perfil móvil, mediana de N corridas). En este equipo, con el API y el
+  recommender corriendo en paralelo:
+  - Inicio: 92. Detalle: 89–91 según el producto y la corrida.
+  - Accesibilidad, buenas prácticas y SEO: 100.
+  - Escritorio: 100 en todo.
+
+  En CI es informativo, porque los runners compartidos varían.
+- **D-57 · Optimizaciones de rendimiento:**
+  - Se quitó el `<Suspense>` del layout de la tienda, que mandaba el contenido después del pie de página (CLS 0,73 → 0).
+  - La fuente de íconos se sirve desde el sitio como subconjunto woff2 de 15 KB, sin CSS externo bloqueante.
+  - Inter sin `preload`.
+  - El detalle se renderiza en línea (`instant = false`), con la imagen principal precargada.
+  - `FichaCompra` ya no usa `useSearchParams`, que forzaba renderizado en cliente.
+  - `browserslist` moderno.
+  - La configuración pública permite saber si el visitante es admin sin provocar un 401.
+- **D-58 · Recomendaciones diferidas.** Se piden cuando la sección se acerca a la pantalla (`IntersectionObserver`,
+  margen de 200 px). Desde entonces `RECOM_MOSTRADA` se registra cuando la lista pudo verse, no al cargar la página.
+  Es más fiel para la Precision@5 de sesión.
+- **D-59 · CI (GitHub Actions).** Trabajos `backend` (PostgreSQL de servicio, lint, build, unitarios, e2e),
+  `recommender` (ruff y pytest), `frontend` (lint y tipos) y `e2e` (pila completa, entrenamiento, build, Playwright;
+  paridad y Lighthouse como informativos, con artefactos).
+- **D-60 · `prisma.config.ts`** tolera la falta de `DIRECT_URL` (`prisma generate` en `npm ci` no necesita conexión).

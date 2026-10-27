@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { Aviso, Encabezado } from "@/components/tienda/encabezado";
 import { Pie } from "@/components/tienda/pie";
 
@@ -10,7 +9,7 @@ export default function LayoutTienda({ children }: LayoutProps<"/">) {
       </a>
       <Encabezado />
       <main id="contenido" className="flex-1">
-        <Suspense>{children}</Suspense>
+        {children}
       </main>
       <Pie />
       <Aviso />

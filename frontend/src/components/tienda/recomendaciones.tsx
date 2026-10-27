@@ -36,10 +36,21 @@ export function Recomendaciones({
   const [error, setError] = useState(false);
   const [seleccion, setSeleccion] = useState<Set<string>>(new Set());
   const ultimaMostrada = useRef<string>("");
+  // La lista se pide (y se registra como mostrada) cuando la sección se acerca a la pantalla: así RECOM_MOSTRADA
+  // refleja lo que el participante pudo ver, y la carga inicial de la página no compite con el recomendador.
+  const seccion = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = seccion.current;
+    if (!el || visible) return;
+    const obs = new IntersectionObserver((entradas) => entradas.some((e) => e.isIntersecting) && setVisible(true), { rootMargin: "200px" });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [visible]);
   const clave = useMemo(() => [...skus].sort().join(","), [skus]);
 
   useEffect(() => {
-    if (!listo) return;
+    if (!listo || !visible) return;
     const control = new AbortController();
     const lista = clave ? clave.split(",") : [];
     const peticion =
@@ -62,7 +73,7 @@ export function Recomendaciones({
       });
     return () => control.abort();
     // sesion: al vincular o terminar una sesión cambia la condición del recomendador
-  }, [listo, clave, contexto, codigoCliente, k, sesion?.id_sesion]);
+  }, [listo, visible, clave, contexto, codigoCliente, k, sesion?.id_sesion]);
 
   useEffect(() => {
     if (!lista?.length) return;
@@ -76,7 +87,7 @@ export function Recomendaciones({
   const elegidos = lista?.filter((p) => seleccion.has(p.sku)) ?? [];
 
   return (
-    <section aria-labelledby={`recos-${contexto}`} className="rounded-2xl bg-acento-50 p-5 sm:p-6">
+    <section ref={seccion} aria-labelledby={`recos-${contexto}`} className="rounded-2xl bg-acento-50 p-5 sm:p-6">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 id={`recos-${contexto}`} className="flex items-center gap-2 text-xl font-extrabold text-marca-900">
@@ -86,9 +97,24 @@ export function Recomendaciones({
         </div>
       </div>
       {lista === null ? (
-        <p className="py-8 text-center text-sm text-slate-700" role="status">
-          Cargando recomendaciones…
-        </p>
+        // Esqueleto del mismo tamaño que las tarjetas: reserva el espacio y evita desplazar la página al cargar (CLS).
+        <div aria-busy="true">
+          <p className="sr-only" role="status">
+            Cargando recomendaciones…
+          </p>
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {Array.from({ length: k }, (_, i) => (
+            <li key={i} className="tarjeta flex flex-col p-3" aria-hidden="true">
+              <div className="aspect-square animate-pulse rounded-lg bg-slate-100" />
+              <div className="mt-3 h-3 w-1/3 rounded bg-slate-100" />
+              <div className="mt-2 h-10 rounded bg-slate-100" />
+              <div className="mt-6 h-3 w-1/4 rounded bg-slate-100" />
+              <div className="mt-1 h-6 w-1/2 rounded bg-slate-100" />
+              <div className="mt-2 h-10 rounded-lg bg-slate-100" />
+            </li>
+          ))}
+          </ul>
+        </div>
       ) : error ? (
         <p className="py-8 text-center text-sm text-red-800" role="alert">
           No se pudieron cargar las recomendaciones.

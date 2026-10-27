@@ -116,7 +116,7 @@ export function Encabezado() {
             <BuscadorNecesidad />
           </div>
           <nav className="order-2 ml-auto flex items-center gap-1 md:order-3" aria-label="Cuenta y carrito">
-            <Link href="/mi-cuenta" className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-100">
+            <Link href="/mi-cuenta" className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-100" aria-label={codigoCliente ? `Mi cuenta (${codigoCliente})` : "Mi cuenta"}>
               <Icono nombre="person" className="text-2xl text-marca-900" />
               <span className="hidden text-xs leading-tight sm:block">
                 <span className="block text-slate-600">{codigoCliente ? `Hola, ${codigoCliente}` : "Hola, inicia sesión"}</span>
@@ -153,7 +153,7 @@ export function Encabezado() {
 export function Aviso() {
   const { aviso } = useTienda();
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
+    <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
       {aviso && (
         <p className="pointer-events-auto flex items-center gap-2 rounded-lg bg-emerald-800 px-4 py-3 text-sm font-semibold text-white shadow-lg">
           <Icono nombre="check_circle" /> {aviso}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { Icono } from "@/components/icono";
 import { ImagenProducto } from "@/components/imagen-producto";
 import { TarjetaProducto } from "@/components/tarjeta-producto";
@@ -9,6 +8,11 @@ import { FichaCompra, PestanasProducto, RecomendacionesDetalle } from "@/compone
 import { producto, productos } from "@/lib/api-servidor";
 import { imagenProducto, precio, urlBusqueda } from "@/lib/formato";
 import { SITIO } from "@/lib/sitio";
+
+// Las fichas se prerenderizan completas (SEO y LCP): el contenido va en orden en el HTML en lugar de llegar por
+// streaming detrás de un <Suspense>. Por eso la ruta lee params arriba y renuncia a la validación de navegación
+// instantánea (la navegación al detalle espera al servidor; las 52 fichas ya están prerenderizadas).
+export const instant = false;
 
 export async function generateStaticParams() {
   const todos = await productos();
@@ -28,7 +32,7 @@ export async function generateMetadata({ params }: PageProps<"/detalle/[sku]">):
   };
 }
 
-async function Detalle({ params }: Pick<PageProps<"/detalle/[sku]">, "params">) {
+export default async function PaginaDetalle({ params }: PageProps<"/detalle/[sku]">) {
   const sku = decodeURIComponent((await params).sku);
   const p = await producto(sku);
   if (!p) notFound();
@@ -56,7 +60,7 @@ async function Detalle({ params }: Pick<PageProps<"/detalle/[sku]">, "params">) 
   };
 
   return (
-    <>
+    <div className="contenedor py-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <nav aria-label="Migas de pan" className="mb-4 text-sm text-slate-700">
         <Link href="/" className="hover:underline">
@@ -98,9 +102,7 @@ async function Detalle({ params }: Pick<PageProps<"/detalle/[sku]">, "params">) 
               <span className="chip bg-red-50 text-red-800">Sin stock</span>
             )}
           </p>
-          <Suspense fallback={<div className="mt-6 h-28" />}>
-            <FichaCompra producto={p} />
-          </Suspense>
+          <FichaCompra producto={p} />
           <ul className="mt-6 space-y-3 rounded-xl border border-slate-200 bg-white p-4 text-sm">
             {[
               ["local_shipping", "Delivery en Lima Metropolitana", "Costo y fecha de despacho por coordinar al confirmar el pedido"],
@@ -144,16 +146,6 @@ async function Detalle({ params }: Pick<PageProps<"/detalle/[sku]">, "params">) 
           </ul>
         </section>
       )}
-    </>
-  );
-}
-
-export default function PaginaDetalle({ params }: PageProps<"/detalle/[sku]">) {
-  return (
-    <div className="contenedor py-6">
-      <Suspense fallback={<p className="tarjeta p-8 text-center text-slate-700" role="status">Cargando producto…</p>}>
-        <Detalle params={params} />
-      </Suspense>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useTienda } from "@/contexto/tienda";
 import type { Origen, Producto } from "@/lib/tipos";
@@ -9,23 +9,31 @@ import { Recomendaciones } from "./recomendaciones";
 
 const ORIGENES: Origen[] = ["BUSQUEDA", "CATEGORIA", "RECOMENDACION"];
 
+/**
+ * Origen de la visita (?origen=&pos=) para el experimento. Se lee de la URL solo al registrar eventos: no afecta lo
+ * que se dibuja, así la ficha se renderiza en el servidor (sin useSearchParams ni Suspense).
+ */
+function origenVisita(): { origen: Origen; pos: number | null } {
+  const sp = new URLSearchParams(window.location.search);
+  const o = (sp.get("origen") ?? "").toUpperCase() as Origen;
+  const origen: Origen = ORIGENES.includes(o) ? o : "BUSQUEDA";
+  return { origen, pos: origen === "RECOMENDACION" ? Number(sp.get("pos")) || null : null };
+}
+
 /** Cantidad, "Agregar al carrito" y "Comprar ahora". Registra VER_DETALLE con el origen de la visita. */
 export function FichaCompra({ producto }: { producto: Producto }) {
-  const sp = useSearchParams();
   const router = useRouter();
   const { agregar, avisar, registrar } = useTienda();
   const [cantidad, setCantidad] = useState(1);
-  const origenUrl = (sp.get("origen") ?? "").toUpperCase() as Origen;
-  const origen: Origen = ORIGENES.includes(origenUrl) ? origenUrl : "BUSQUEDA";
-  const pos = origen === "RECOMENDACION" ? Number(sp.get("pos")) || null : null;
   const sinStock = producto.stock <= 0;
   const visto = useRef("");
 
   useEffect(() => {
     if (visto.current === producto.sku) return;
     visto.current = producto.sku;
+    const { origen, pos } = origenVisita();
     registrar({ tipo_evento: "VER_DETALLE", sku: producto.sku, origen, posicion_recom: pos });
-  }, [producto.sku, origen, pos, registrar]);
+  }, [producto.sku, registrar]);
 
   return (
     <div className="mt-6 flex flex-wrap items-end gap-3">
@@ -56,6 +64,7 @@ export function FichaCompra({ producto }: { producto: Producto }) {
         className="btn-marca flex-1 py-3"
         disabled={sinStock}
         onClick={() => {
+          const { origen, pos } = origenVisita();
           agregar(producto, origen, pos, cantidad);
           avisar(`${cantidad} × ${producto.nombre} agregado al carrito`);
         }}
@@ -67,6 +76,7 @@ export function FichaCompra({ producto }: { producto: Producto }) {
         className="btn-primario flex-1 py-3"
         disabled={sinStock}
         onClick={() => {
+          const { origen, pos } = origenVisita();
           agregar(producto, origen, pos, cantidad);
           router.push("/carrito");
         }}

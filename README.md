@@ -83,13 +83,21 @@ $env:ADMIN_PASSWORD="ferremax-dev"; npm run capturas
 Genera las capturas de escritorio y de móvil (360 px) de todas las pantallas en la carpeta `capturas/`, que puedes
 abrir desde VS Code.
 
-## Pruebas
+## Pruebas y calidad
+
+| Qué | Comando (desde la raíz, con los servicios corriendo) |
+|---|---|
+| Punta a punta (Playwright) | `npm run e2e` (informe: `npm run e2e:informe`) |
+| Paridad v1 ↔ v2 | `npm run paridad` (solo GET a sosdigital.lat) |
+| Lighthouse (móvil, mediana de 3) | `npm run lighthouse` (frontend con `next build` + `next start`) |
 
 | App | Comandos |
 |---|---|
 | backend | `npm run lint`, `npm run build`, `npm test` (unitarios), `npx vitest run --config ./vitest.config.e2e.ts` (e2e contra `ferremax_test`) |
 | recommender | `uv run ruff check .`, `uv run pytest` |
 | frontend | `npm run lint`, `npm run typecheck`, `npx next build` (necesita el API corriendo: prerenderiza el catálogo) |
+
+El CI (`.github/workflows/ci.yml`) corre todo lo anterior en cada push.
 
 ## Variables de entorno
 

@@ -33,8 +33,9 @@ export function ImagenProducto({
           fill
           sizes={sizes}
           className="object-contain p-3 mix-blend-multiply"
-          loading={prioridad ? "eager" : "lazy"}
-          fetchPriority={prioridad ? "high" : undefined}
+          // Imagen principal (LCP): <link rel="preload"> en el <head> para pedirla antes que los scripts.
+          preload={prioridad}
+          loading={prioridad ? undefined : "lazy"}
           onError={() => setError(true)}
         />
       )}

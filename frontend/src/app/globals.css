@@ -38,7 +38,14 @@
   }
 }
 
-/* Material Symbols (subconjunto de íconos servido por Google Fonts, ver layout.tsx) */
+/* Material Symbols: subconjunto propio (npm run iconos) servido desde el sitio, sin CSS externo que bloquee el render */
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("/fonts/material-symbols.woff2") format("woff2");
+}
 .icono {
   font-family: "Material Symbols Outlined";
   font-weight: normal;

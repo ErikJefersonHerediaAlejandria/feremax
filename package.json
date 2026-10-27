@@ -4,9 +4,15 @@
   "description": "FerreMax v2 · monorepo (frontend Next.js, backend NestJS, recommender FastAPI)",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "capturas": "node scripts/capturas.mjs"
+    "capturas": "node scripts/capturas.mjs",
+    "e2e": "playwright test",
+    "e2e:informe": "playwright show-report",
+    "paridad": "node scripts/paridad.mjs",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "^1.64.1"
+    "@playwright/test": "^1.64.1",
+    "lighthouse": "^13.5.0",
+    "wait-on": "^9.5.1"
   }
 }

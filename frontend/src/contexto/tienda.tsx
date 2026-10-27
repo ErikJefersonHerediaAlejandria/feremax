@@ -117,15 +117,16 @@ export function ProveedorTienda({ children }: { children: ReactNode }) {
     };
   }, [refrescarSesion]);
 
-  useEffect(() => {
-    api<ConfigPublica>("/api/admin/config").then(setConfig).catch(() => undefined);
-  }, []);
-  // ¿Hay un admin con sesión en este navegador? Solo entonces se muestra el indicador de sesión de evaluación.
+  // Una sola llamada: GET /api/admin/config devuelve {k, fuente_datos} al público y la configuración completa
+  // (con modo_activo) solo al admin; así se sabe si mostrar el indicador de sesión sin provocar un 401.
   const enAdmin = ruta.startsWith("/admin");
   useEffect(() => {
-    api<{ valido: boolean }>("/api/admin/verificar")
-      .then((r) => setEsAdmin(r.valido))
-      .catch(() => setEsAdmin(false));
+    api<ConfigPublica & { modo_activo?: string }>("/api/admin/config")
+      .then((c) => {
+        setConfig(c);
+        setEsAdmin(c.modo_activo !== undefined);
+      })
+      .catch(() => undefined);
   }, [enAdmin]);
 
   const avisar = useCallback((texto: string) => {

@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "24"
+  DB_TEST: postgresql://postgres:postgres@localhost:5432/ferremax_test?schema=public
+  DB_E2E: postgresql://postgres:postgres@localhost:5432/ferremax_e2e?schema=public
+
+jobs:
+  backend:
+    name: Backend (NestJS)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ferremax_test
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: ${{ env.DB_TEST }}
+      DIRECT_URL: ${{ env.DB_TEST }}
+      TEST_DATABASE_URL: ${{ env.DB_TEST }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - name: Tests unitarios
+        run: npm test
+      - name: Tests e2e (supertest, recommender simulado)
+        run: npx vitest run --config ./vitest.config.e2e.ts
+
+  recommender:
+    name: Recommender (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: recommender
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: recommender/uv.lock
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - name: Tests (pytest)
+        run: uv run pytest
+
+  frontend:
+    name: Frontend (lint y tipos)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+
+  e2e:
+    name: Punta a punta (Playwright) · paridad · Lighthouse
+    needs: [backend, recommender, frontend]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ferremax_e2e
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: ${{ env.DB_E2E }}
+      DIRECT_URL: ${{ env.DB_E2E }}
+      JWT_SECRET: ci-secreto-de-pruebas-0123456789abcdef-xyz
+      RECOMMENDER_URL: http://localhost:8001
+      RECOMMENDER_KEY: ci-clave-interna
+      FRONTEND_ORIGIN: http://localhost:3000
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: ci-admin-pass
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      API_URL_INTERNA: http://localhost:4000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: recommender/uv.lock
+
+      - name: Instalar dependencias
+        run: |
+          npm ci
+          npm --prefix backend ci
+          npm --prefix frontend ci
+          (cd recommender && uv sync --frozen)
+          npx playwright install --with-deps chromium
+
+      - name: Base de datos (migraciones + seed con boletas sintéticas)
+        working-directory: backend
+        run: npx prisma migrate deploy && npx prisma db seed
+
+      - name: Levantar recommender y API
+        run: |
+          (cd recommender && nohup uv run uvicorn ferremax_recommender.api:app --port 8001 > ../recommender.log 2>&1 &)
+          npm --prefix backend run build
+          (cd backend && nohup node dist/main.js > ../api.log 2>&1 &)
+          npx --no-install wait-on -t 120000 http-get://localhost:8001/health http-get://localhost:4000/api/health
+
+      - name: Entrenar el modelo (reglas + LightGBM)
+        run: |
+          curl -fsS -X POST localhost:8001/reentrenar -H "X-Internal-Key: $RECOMMENDER_KEY" | head -c 400
+
+      - name: Build y arranque del frontend (prerenderiza el catálogo desde el API)
+        run: |
+          npm --prefix frontend run build
+          (cd frontend && nohup npx next start --port 3000 > ../web.log 2>&1 &)
+          npx --no-install wait-on -t 60000 http-get://localhost:3000
+
+      - name: Playwright
+        run: npx playwright test
+
+      - name: Paridad de formas v1 ↔ v2 (solo GET a v1; informativo)
+        continue-on-error: true
+        run: npm run paridad
+
+      - name: Lighthouse (informativo; los runners compartidos varían)
+        continue-on-error: true
+        run: npm run lighthouse
+
+      - name: Informes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: informes-e2e
+          path: |
+            playwright-report/
+            lighthouse/*.html
+            *.log
+          retention-days: 14
