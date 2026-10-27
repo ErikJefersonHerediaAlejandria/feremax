@@ -13,6 +13,28 @@ pg_dump -h localhost -p 5433 -U ferremax -d ferremax_dev --no-owner --no-privile
 node db/exportar.mjs raw.sql db/ferremax_v2.sql
 ```
 
+## Alternativa: importar con CSV (carpeta `csv/`)
+
+| Orden | Archivo | Tabla | Filas |
+|---|---|---|---|
+| 1 | `01_estructura.sql` | crea las 13 tablas vacías, índices, RLS y el registro de migraciones | — |
+| 2 | `02_productos.csv` | `productos` | 52 |
+| 3 | `03_configuracion.csv` | `configuracion` | 1 |
+| 4 | `04_boletas.csv` | `boletas` | 5.000 |
+| 5 | `05_boleta_items.csv` | `boleta_items` | 13.556 |
+
+**El orden importa:** `boleta_items` hace referencia a `boletas` y `productos`, así que esas dos tablas deben
+tener datos antes.
+
+1. *SQL Editor* → *New query* → pega `01_estructura.sql` → **Run**.
+2. *Table Editor* → tabla `productos` → **Insert** → **Import data from CSV** → arrastra `02_productos.csv` →
+   revisa la vista previa → **Import data**.
+3. Repite con `configuracion`, `boletas` y `boleta_items`, en ese orden.
+4. `boleta_items.csv` no trae columna `id`: Postgres la numera solo.
+
+Las demás tablas (reglas, sesiones, eventos, pedidos, modelos, admins…) empiezan vacías: las llenan la app y el
+recommender.
+
 ## 1. Crear el proyecto
 
 1. Entra a <https://supabase.com/dashboard> → **New project**.

@@ -1,0 +1,53 @@
+sku,nombre,marca,categoria,subcategoria,unidad,uso,precio,stock,activo,imagen_url
+ACC-001,"Codo PVC agua 1/2"" x 90°",Pavco,Gasfitería,Accesorios PVC,Und,Cambio de dirección tubería agua,1.50,35,true,/img/productos/ACC-001.webp
+ACC-002,"Tee PVC agua 1/2""",Pavco,Gasfitería,Accesorios PVC,Und,Derivación tubería de agua,2.00,0,true,/img/productos/ACC-002.webp
+ACC-003,"Codo PVC desague 2"" x 90°",Tigre,Gasfitería,Accesorios PVC,Und,Conexión de desagüe,4.00,21,true,/img/productos/ACC-003.webp
+ACC-004,Pegamento para PVC Oatey / Pavco 1/4 gal,Pavco,Gasfitería,Accesorios PVC,Und,Soldadura líquida tuberías PVC,36.00,5,true,/img/productos/ACC-004.webp
+ALA-001,Alambre de amarre N° 16 rollo 50kg,Aceros Arequipa,Construcción y Estructuras,Fierros y Aceros,Rol,Amarre de estructuras de fierro,255.00,5,true,/img/productos/ALA-001.webp
+CLO-001,"Clavos para madera con cabeza 2"" kg",Aceros Arequipa,Construcción y Estructuras,Fierros y Aceros,Kg,Carpintería y encofrados,9.50,36,true,/img/productos/CLO-001.webp
+CLO-002,"Clavos para madera con cabeza 3"" kg",Aceros Arequipa,Construcción y Estructuras,Fierros y Aceros,Kg,Encofrados y techos,9.50,31,true,/img/productos/CLO-002.webp
+CON-001,Cemento Sol Tipo I 42.5kg,Aceros Arequipa,Construcción y Estructuras,Cementos y Aditivos,Bolsa,Uso general en construcción,30.50,0,true,/img/productos/CON-001.webp
+CON-002,Cemento Apu Tipo IP 42.5kg,Aceros Arequipa,Construcción y Estructuras,Cementos y Aditivos,Bolsa,Obras de albañilería,29.00,10,true,/img/productos/CON-002.webp
+CON-003,Aditivo Sika Latex bonding 1 galón,Sika,Construcción y Estructuras,Cementos y Aditivos,Und,Puente de adherencia y morteros,95.00,11,true,/img/productos/CON-003.webp
+CON-004,Impermeabilizante Sika 1 5kg,Sika,Construcción y Estructuras,Cementos y Aditivos,Bls,Para cimientos y sobrecimientos,52.00,14,true,/img/productos/CON-004.webp
+ELE-001,Cable THW 14 AWG x 100m rojo,Indura,Electricidad,Cables y Conductores,Rol,Instalaciones eléctricas residenciales,115.00,4,true,/img/productos/ELE-001.webp
+ELE-002,Cable THW 12 AWG x 100m azul,Indura,Electricidad,Cables y Conductores,Rol,Tomacorrientes residenciales,175.00,6,true,/img/productos/ELE-002.webp
+ELE-003,Cable mellizo 2x16 AWG x 100m,Indura,Electricidad,Cables y Conductores,Rol,Extensiones y aparatos menores,85.00,15,true,/img/productos/ELE-003.webp
+ELE-004,Interruptor simple Bticino / similar,Bosch,Electricidad,Tomacorrientes e Interruptores,Und,Control de iluminación,12.00,32,true,/img/productos/ELE-004.webp
+ELE-005,Tomacorriente doble con puesta a tierra,Bosch,Electricidad,Tomacorrientes e Interruptores,Und,Salida de corriente segura,15.00,37,true,/img/productos/ELE-005.webp
+ELE-006,Interruptor termomagnético 2x32A Riel DIN,Bosch,Electricidad,Tomacorrientes e Interruptores,Und,Protección contra sobrecargas,48.00,18,true,/img/productos/ELE-006.webp
+ELE-007,Cinta aislante profesional 3M 20m,Norton,Electricidad,Cables y Conductores,Und,Aislamiento eléctrico,7.50,55,true,/img/productos/ELE-007.webp
+ELE-008,Foco LED 12W luz blanca rosca E27,Bosch,Electricidad,Tomacorrientes e Interruptores,Und,Iluminación eficiente,14.00,25,true,/img/productos/ELE-008.webp
+FER-001,Silicona transparente en cartucho 280g,Sika,Ferretería General,Adhesivos y Cintas,Und,Sellado de juntas y lunas,16.00,10,true,/img/productos/FER-001.webp
+FER-002,Pegamento instantáneo Cola Loca / Zot,Fast,Ferretería General,Adhesivos y Cintas,Und,Pegado rápido multiuso,5.50,22,true,/img/productos/FER-002.webp
+FER-003,"Cinta masking tape 2"" x 40m",Norton,Ferretería General,Adhesivos y Cintas,Und,Enmascarado para pintura,9.00,17,true,/img/productos/FER-003.webp
+FER-004,"Tornillos para madera 1-1/2"" caja x 100",Truper,Ferretería General,Elementos de Fijación,Cja,Fijación en carpintería,18.00,25,true,/img/productos/FER-004.webp
+FER-005,Tarugos de expansión plasticos S-8 bolsa x 100,Fast,Ferretería General,Elementos de Fijación,Bls,Anclaje en paredes tarrajeadas,11.00,40,true,/img/productos/FER-005.webp
+FER-006,Juego de brocas para concreto x 5 piezas,Bosch,Ferretería General,Elementos de Fijación,Jgo,Perforación con taladro,33.00,7,true,/img/productos/FER-006.webp
+FIE-001,"Fierro de construcción corrugado 3/8"" x 9m",Aceros Arequipa,Construcción y Estructuras,Fierros y Aceros,Var,Refuerzo estructural,29.50,14,true,/img/productos/FIE-001.webp
+FIE-002,"Fierro de construcción corrugado 1/2"" x 9m",Aceros Arequipa,Construcción y Estructuras,Fierros y Aceros,Var,Refuerzo estructural columnas,51.00,79,true,/img/productos/FIE-002.webp
+FIE-003,"Fierro corrugado 1/4"" x 9m",Aceros Arequipa,Construcción y Estructuras,Fierros y Aceros,Var,Estribos y columnas menores,15.00,14,true,/img/productos/FIE-003.webp
+HER-001,Martillo uña de acero mango de fibra 16oz,Truper,Herramientas,Herramientas Manuales,Und,Carpintería y golpeo general,34.00,9,true,/img/productos/HER-001.webp
+HER-002,"Destornillador punta plana 1/4"" x 6""",Stanley,Herramientas,Herramientas Manuales,Und,Ajuste de tornillos ranurados,14.00,26,true,/img/productos/HER-002.webp
+HER-003,"Destornillador estrella Phillips 1/4"" x 6""",Stanley,Herramientas,Herramientas Manuales,Und,Ajuste de tornillos estrella,14.00,28,true,/img/productos/HER-003.webp
+HER-004,"Alicate universal 8"" mango aislado",Truper,Herramientas,Herramientas Manuales,Und,Corte y sujeción de alambres,38.00,8,true,/img/productos/HER-004.webp
+HER-005,Wincha / Flexómetro 5 metros,Stanley,Herramientas,Herramientas Manuales,Und,Mediciones de longitud,22.00,18,true,/img/productos/HER-005.webp
+HER-006,"Taladro percutor 1/2"" 650W con maletín",Makita,Herramientas,Herramientas Eléctricas,Und,Perforación en concreto y madera,240.00,6,true,/img/productos/HER-006.webp
+HER-007,"Amoladora angular 4-1/2"" 840W",Makita,Herramientas,Herramientas Eléctricas,Und,Corte y desbaste de metales,260.00,3,true,/img/productos/HER-007.webp
+HER-008,Arco de sierra profesional con hoja,Truper,Herramientas,Herramientas Manuales,Und,Corte de metales y tubos,28.00,11,true,/img/productos/HER-008.webp
+IFO-001,Inodoro Trebol One Piece económico,Trebol,Gasfitería,Accesorios PVC,Und,Loza sanitaria para baño,365.00,8,true,/img/productos/IFO-001.webp
+LAV-001,Lavatorio de loza blanco con pedestal,Trebol,Gasfitería,Accesorios PVC,Und,Instalación de baños,165.00,7,true,/img/productos/LAV-001.webp
+PIN-001,Pintura látex blanca 1 galón,Vencedor,Pinturas y Acabados,Látex,Und,Pared interior/exterior,48.00,2,true,/img/productos/PIN-001.webp
+PIN-002,Pintura látex marfil 1 galón,Vencedor,Pinturas y Acabados,Látex,Und,Pared interior,48.00,3,true,/img/productos/PIN-002.webp
+PIN-003,Esmalte sintético rojo 1/4 galón,CPP,Pinturas y Acabados,Esmaltes,Und,Protección metales y madera,27.00,8,true,/img/productos/PIN-003.webp
+PIN-004,Esmalte sintético negro brillante 1 galón,CPP,Pinturas y Acabados,Esmaltes,Und,Protección metales y madera,68.00,11,true,/img/productos/PIN-004.webp
+PIN-005,Aerosol spray negro mate 400ml,Fast,Pinturas y Acabados,Aerosoles,Und,Pintura rápida multiuso,16.00,18,true,/img/productos/PIN-005.webp
+PIN-006,Aerosol spray aluminio brillante 400ml,Fast,Pinturas y Acabados,Aerosoles,Und,Pintura decorativa alta temperatura,17.00,23,true,/img/productos/PIN-006.webp
+PIN-007,Imprimante para paredes 1 galón,Vencedor,Pinturas y Acabados,Látex,Und,Sellador de muros antes del empaste,34.00,9,true,/img/productos/PIN-007.webp
+PIN-008,Pasta desintoxicante / temples 20kg,Glidden,Pinturas y Acabados,Látex,Bolsa,Preparación de superficies,42.00,9,true,/img/productos/PIN-008.webp
+TUB-001,"Tubo PVC SAP 1/2"" x 5m",Pavco,Gasfitería,Tuberías PVC,Und,Conducción de agua fría a presión,22.00,13,true,/img/productos/TUB-001.webp
+TUB-002,"Tubo PVC SAP 3/4"" x 5m",Pavco,Gasfitería,Tuberías PVC,Und,Instalaciones sanitarias,30.00,18,true,/img/productos/TUB-002.webp
+TUB-003,"Tubo PVC SAL desague 2"" x 3m",Tigre,Gasfitería,Tuberías PVC,Und,Desagüe y ventilación,26.00,8,true,/img/productos/TUB-003.webp
+TUB-004,"Tubo PVC SAL desague 4"" x 3m",Tigre,Gasfitería,Tuberías PVC,Und,Evacuación de aguas servidas,54.00,19,true,/img/productos/TUB-004.webp
+VAL-001,"Válvula esférica de bronce 1/2""",Stanley,Gasfitería,Accesorios PVC,Und,Corte de suministro de agua,28.00,10,true,/img/productos/VAL-001.webp
+VAL-002,"Cinta teflón 3/4"" x 10m",Fast,Gasfitería,Accesorios PVC,Und,Sellado de roscas en gasfitería,2.50,118,true,/img/productos/VAL-002.webp

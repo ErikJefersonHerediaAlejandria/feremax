@@ -1,0 +1,2 @@
+id,modo_activo,k,soporte_min,confianza_min,lift_min,peso_contenido,variante_ml,fuente_datos
+1,ML,5,0.01,0.15,1.2,1,COMPLETO,sintetico
