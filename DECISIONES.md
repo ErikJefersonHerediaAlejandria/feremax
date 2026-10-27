@@ -90,3 +90,22 @@ Registro de decisiones tomadas ante ambigüedades (la opción más simple, salvo
   bucket privado `modelos`. `modelos.artefacto` guarda `local://…` o `storage://modelos/…`.
 - **D-34 · Sinónimos.** "pared" solo se expande a "tarugo": expandirla a pinturas desviaba búsquedas como "colgar un
   cuadro en la pared".
+
+## Fase 3
+- **D-35 · Formato de errores de v1 (FastAPI):** `{"detail": …}`. Los 422 llevan `loc` con su origen
+  (`body`/`query`/`path`); `PipeValidacion` envuelve `ValidationPipe` con `whitelist` + `forbidNonWhitelisted`.
+- **D-36 · Sin token de sesión válido**, eventos y pedidos se guardan con `id_sesion = "SIN-SESION"` y la condición
+  de `modo_activo`. Con token, la sesión fija `id_sesion`, `codigo_cliente`, `escenario` y la condición. Así un
+  cliente no puede contaminar las métricas de otra sesión.
+- **D-37 · Una sola sesión activa a la vez** (409 si hay otra). Los IDs son `SES-0001`, `SES-0002`… y el token es
+  aleatorio de 192 bits.
+- **D-38 · `GET /api/admin/config` público** devuelve solo `{k, fuente_datos}`: no revela la condición al
+  participante. Con cookie de admin devuelve la configuración completa (cambia respecto de v1; ver D-13).
+- **D-39 · `base` en `/recomendar/cliente`:** `HISTORIAL_Y_CARRITO` si se usó el historial; si no, `SIN_HISTORIAL`.
+- **D-40 · Métricas de sesión (capa 2):** "lista" = `RECOM_MOSTRADA` con el mismo timestamp; P@5 = media por lista de
+  aciertos / 5; aceptada = producto mostrado en el top 5 y comprado con origen `RECOMENDACION`. McNemar se calcula
+  pareado por participante con la última sesión válida y completa de cada condición.
+- **D-41 · Rutas nuevas (no rompen v1):** `/api/health`, `POST /api/admin/logout`, `/api/docs` (fuera de producción).
+- **D-42 · Pedido:** se fusionan las líneas repetidas del mismo SKU. Se usa un descuento condicional
+  (`stock >= cantidad`) dentro de la transacción, así que nunca queda stock negativo.
+- **D-43 · Cliente Prisma generado en `src/generated/prisma`**, para que `nest build` lo compile.
